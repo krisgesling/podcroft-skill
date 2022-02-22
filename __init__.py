@@ -57,7 +57,9 @@ class Podcroft(CommonPlaySkill):
         if results is None:
             self.speak_dialog('could-not-find', {'title': search_term})
             return
+        self.show_single_podcast(results[0].name, results[0].image, persist=True)
         confirm = self.ask_yesno('did-you-mean-title-and-author', {'title': results[0].name, 'author': results[0].author})
+        self.gui.release()
         if confirm == 'yes':
             rss_url = results[0].feed
         else:
@@ -87,6 +89,13 @@ class Podcroft(CommonPlaySkill):
         subscription = self.client.unsubscribe_from_podcast(subscription)
         self.speak_dialog('unsubscribed-from-podcast', {'title': subscription.title})
 
+    ##########################################################################
+    #### SHOW PAGES
+    ##########################################################################
+    def show_single_podcast(self, title: str = '', image: str = '', persist: bool = False):
+        self.gui['title'] = title
+        self.gui['imgLink'] = image
+        self.gui.show_page('SinglePodcastTitle.qml', override_idle=persist)
 
 
 def create_skill():
