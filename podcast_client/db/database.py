@@ -36,3 +36,14 @@ class Database:
         else:
             LOG.error(f"Entry not found in database: {key}")
             return False
+
+    def replace_entry(self, key, value):
+        """Replace all data for an entry"""
+        if key not in self.data:
+            LOG.error(f"Entry not found in database: {key}")
+            return False
+        # Add a reference to the entries own key to make it easy to find
+        value['self'] = key
+        self.data[key] = value
+        self.data.store()
+        return True

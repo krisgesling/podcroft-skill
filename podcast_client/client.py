@@ -1,11 +1,16 @@
+from collections import namedtuple
 from typing import List
 
 import podsearch
 
 from mycroft.util import LOG
+from mycroft.util.time import now_utc
 
 from .subscription_manager import SubscriptionManager
 from .subscription_manager.subscription import Subscription
+
+
+LastUpdated = namedtuple("last_updated", ("timestamp", "titles"))
 
 
 class PodcastClient:
@@ -13,6 +18,7 @@ class PodcastClient:
 
     def __init__(self, config={}):
         self.sub_manager = SubscriptionManager(config)
+        self.last_updated = LastUpdated(None, [])
 
     def subscribe_to_podcast(self, rss_url: str) -> bool:
         """Subscribes to a podcast.
@@ -26,6 +32,22 @@ class PodcastClient:
         """Unsubscribe from a podcast."""
         LOG.error(subscription.title)
         return self.sub_manager.unsubscribe_from_podcast(subscription)
+
+    def update_podcast(self, subscription: Subscription) -> bool:
+        return self.sub_manager.update_subscription(subscription)
+
+    def update_all_podcasts(self) -> List[bool]:
+        LOG.info("Updating all podcast subscriptions")
+        results = self.sub_manager.update_all_subscriptions()
+        if any(results):
+            updated_podcasts = [
+                self.sub_manager.subscriptions[idx].title
+                for idx, result in enumerate(results)
+                if result
+            ]
+            self.last_updated = LastUpdated(now_utc, updated_podcasts)
+            LOG.info(f"Updated {updated_podcasts}")
+            return updated_podcasts
 
     def find_subscription(self, search_term: str) -> Subscription:
         return self.sub_manager.find_subscription(search_term)

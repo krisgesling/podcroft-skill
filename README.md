@@ -26,6 +26,7 @@ Basic functionality
 - [x] Select which podcast feed to play
 - [x] Remove feed from subscriptions
 - [x] Search for a new podcast via voice
+- [x] Daily sync of subscribed podcasts
 
 Listen history
 - [ ] Track listen history for a feed
@@ -40,7 +41,7 @@ Advanced episode selection
 
 Sync triggering
 - [ ] Set sync time and frequency
-- [ ] Manually trigger sync
+- [x] Manually trigger sync
 
 Bookmarking
 - [ ] Bookmark favourite episodes

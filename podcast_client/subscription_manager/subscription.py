@@ -13,6 +13,7 @@ class Subscription:
     homepage_url: str
     author: str
     episode_dict: dict
+    full_data: dict
 
     @property
     def episodes(self):
